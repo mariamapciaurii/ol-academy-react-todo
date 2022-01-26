@@ -62,7 +62,7 @@ class Todotask extends Component {
             </span>
           )}
         </div>
-        {/* edit logic end */}
+        {}
         <div className='ctrl-buttons'>
           <button
             className='btn'

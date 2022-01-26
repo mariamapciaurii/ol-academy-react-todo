@@ -163,7 +163,7 @@ class Todolist extends React.Component {
           </div>
         </div>
         <div className='todo'>
-          {/* Edit Logic */}
+          {}
           <ul className='ulist'>
             {this.state.todos.map((todo, index) => (
               <Todotask
