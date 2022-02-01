@@ -1,48 +1,89 @@
-import React, { useState } from 'react';
-import TodoForm from './TodoForm';
-import { RiCloseCircleLine } from 'react-icons/ri';
-import { TiEdit } from 'react-icons/ti';
+import React, { useState } from "react";
+import "../components/Todo.css"
 
-const Todo = ({ todos, completeTodo, removeTodo, updateTodo }) => {
-  const [edit, setEdit] = useState({
-    id: null,
-    value: ''
-  });
+function TodoApp() {
+  const [task, setTask] = useState("");
+  const [tasklist, setTaskList] = useState([]);
 
-  const submitUpdate = value => {
-    updateTodo(edit.id, value);
-    setEdit({
-      id: null,
-      value: ''
-    });
+  const handleChange = (e) => {
+    setTask(e.target.value);
   };
 
+  const AddTask = () => {
+    if (task !== "") {
+      const taskDetails = {
+        id: Math.floor(Math.random() * 1000),
+        value: task,
+        isCompleted: false,
+      };
 
-  if (edit.id) {
-    return <TodoForm edit={edit} onSubmit={submitUpdate} />;
-  }
+      setTaskList([...tasklist, taskDetails]);
+    }
+  };
 
-  return todos.map((todo, index) => (
-    <div
-      className={todo.isComplete ? 'todo-row complete' : 'todo-row'}
-      key={index}
-    >
-      <div key={todo.id} onClick={() => completeTodo(todo.id)}>
-        {todo.text}
+  const deletetask = (e, id) => {
+    e.preventDefault();
+    setTaskList(tasklist.filter((t) => t.id !== id));
+  };
+
+  const taskCompleted = (e, id) => {
+    e.preventDefault();
+    //let's find index of element
+    const element = tasklist.findIndex((elem) => elem.id === id);
+
+    //copy array into new variable
+    const newTaskList = [...tasklist];
+
+    //edit our element
+    newTaskList[element] = {
+      ...newTaskList[element],
+      isCompleted: true,
+    };
+
+    setTaskList(newTaskList);
+  };
+
+  return (
+    <div className="todo">
+      <div>
+      <input
+        type="text"
+        name="text"
+        id="text"
+        onChange={(e) => handleChange(e)}
+        placeholder="What`s the  plan for today?"
+      />
+      <button className="add-btn" onClick={AddTask}>
+        ADD TODO
+      </button>
       </div>
+     
+      <br />
+      {tasklist !== [] ? (
+        <ul>
+          {tasklist.map((t) => (
+            <li className={t.isCompleted ? "crossText" : "listitem"}>
+              {t.value}
+              
+              <div>
+              <button
+                className="completed"
+                onClick={(e) => taskCompleted(e, t.id)}
+              >
+                Completed
+              </button>
 
-      <div className='icons'>
-        <RiCloseCircleLine
-          onClick={() => removeTodo(todo.id)}
-          className='delete-icon'
-        />
-        <TiEdit
-          onClick={() => setEdit({ id: todo.id, value: todo.text })}
-          className='edit-icon'
-        />
-      </div>
+              <button className="delete" onClick={(e) => deletetask(e, t.id)}>
+                Delete
+              </button>
+              </div>
+            
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </div>
-  ));
-};
+  );
+}
 
-export default Todo;
+export default TodoApp;
